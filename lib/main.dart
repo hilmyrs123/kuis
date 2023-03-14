@@ -1,11 +1,35 @@
 import 'package:flutter/material.dart';
 
+class Data {
+  String kode = "";
+
+  String nama = "";
+
+  String vol = "";
+
+  String turnOver = "";
+
+  String harga = "";
+
+  String naikTurun = "";
+
+  String pctNaikTurun = "";
+}
+
+//item dropdown
+const List<String> listdropdown1 = <String>[
+  "Active Turn Over",
+  "Active Volume"
+];
+const List<String> listdropdown2 = <String>["1D", "1W"];
+
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
   @override
   MyAppState createState() {
     return MyAppState();
@@ -13,134 +37,262 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  //array of controllers
-  List<TextEditingController> contol = [
-    for (int i = 1; i < 5; i++) TextEditingController()
-  ];
-  //Deklarasi variabel
-  var pjg = 0;
-  var lbr = 0;
-  var luas = 0;
-  var keliling = 0;
-  bool isclicked = false;
-
-  String pilihanmenu = "Luas";
-  String pilihanmenuout = "";
-
+  //pilihanactive
+  String pilihanactive1 = listdropdown1.first;
+  String pilihanactive2 = listdropdown2.first;
+  List<String> data = [];
   @override
-  void dispose() {
-    for (int i = 1; i < 5; i++) {
-      contol[i].dispose();
+  void initState() {
+    super.initState();
+    for (int i = 0; i < 20; i++) {
+      data.add("Data ke $i ");
     }
-    super.dispose();
   }
 
-  @override
   Widget build(BuildContext context) {
-    //dropdown list
-    List<DropdownMenuItem<String>> Pilih = [];
-    //item
-    var item1 = const DropdownMenuItem<String>(
-      value: "Luas",
-      child: Text("Luas ="),
-    );
-    var item2 = const DropdownMenuItem<String>(
-      value: "keliling",
-      child: Text("Keliling = "),
-    );
-    Pilih.add(item1);
-    Pilih.add(item2);
-
-    //materialapp
     return MaterialApp(
       title: 'Hello App',
       home: Scaffold(
-        backgroundColor: Color.fromRGBO(203, 208, 255, 0.498),
         appBar: AppBar(
-          title: const Text('Persegi Panjang'),
-        ),
-        body: Center(
-            child: Column(
-          mainAxisSize: MainAxisSize.min,
+            leading: const FlutterLogo(),
+            backgroundColor: Colors.blueGrey,
+            title: const Text('Quiz Flutter'),
+            actions: const <Widget>[ButtonNamaKelompok(), ButtonPerjanjian()]),
+        body: Column(
           children: [
-            Text(
-              'Panjang :',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              width: 500,
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Panjang',
-                    hintText: '0',
+            //Row untuk dropdown
+            Row(
+              children: [
+                Expanded(
+                  //Dropdown 1
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    value: pilihanactive1,
+                    onChanged: (String? value) {
+                      setState(() {
+                        pilihanactive1 = value!;
+                      });
+                    },
+                    items: listdropdown1
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
                   ),
-                  controller: contol[0],
                 ),
-              ),
-            ),
-            Text(
-              'Lebar :',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              width: 500,
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Lebar',
-                    hintText: '0',
-                  ),
-                  controller: contol[1],
+
+                //Dropdown 2
+                DropdownButton<String>(
+                  value: pilihanactive2,
+                  onChanged: (String? value) {
+                    setState(() {
+                      pilihanactive2 = value!;
+                    });
+                  },
+                  items: listdropdown2
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
                 ),
-              ),
+              ],
             ),
-            Container(
-              padding: EdgeInsets.all(20),
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    pjg = int.parse(contol[0].text);
-                    lbr = int.parse(contol[1].text);
-                    luas = pjg * lbr;
-                    keliling = 2 * pjg + 2 * lbr;
-                    if (pjg != 0 && lbr != 0) isclicked = true;
-                  });
-                },
-                child: const Text('Hasil'),
-                style: ElevatedButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+            //Kontainer kosong buat white space
+            const SizedBox(
+              height: 10,
+            ),
+            Expanded(
+                child: GridView.count(
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              crossAxisCount: 4,
+              children: <Widget>[
+                Container(
+                    alignment: Alignment.center,
+                    height: 200,
+                    width: 200,
+                    child: ListView(
+                      padding: const EdgeInsets.all(8),
+                      children: <Widget>[
+                        Container(
+                          height: 50,
+                          child: const Center(
+                              child: Text(
+                            'BBRI',
+                            style: TextStyle(
+                                fontSize: 35, fontWeight: FontWeight.bold),
+                          )),
+                        ),
+                        Container(
+                          height: 50,
+                          child: Center(child: Text('$pilihanactive1')),
+                        )
+                      ],
                     )),
-              ),
-            ),
-            isclicked
-                ? Text(
-                    'Luas = $luas',
-                    style: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w900,
-                        color: Color.fromRGBO(36, 32, 71, 1)),
-                  )
-                : Container(),
-            DropdownButton(
-                value: pilihanmenu,
-                items: Pilih,
-                onChanged: (String? newvalue) {
-                  if (newvalue != null) {
-                    pilihanmenu = newvalue;
-                  }
-                })
+                Container(
+                    alignment: Alignment.center,
+                    height: 100,
+                    width: 100,
+                    child: ListView(
+                      padding: const EdgeInsets.all(8),
+                      children: <Widget>[
+                        Container(
+                          height: 50,
+                          child: const Center(
+                              child: Text('Bank Rakyat Indonesia')),
+                        ),
+                        Container(
+                          height: 50,
+                          child: const Center(child: Text('125M')),
+                        ),
+                        Container(
+                          height: 50,
+                          child: const Center(child: Text('605B')),
+                        ),
+                      ],
+                    )),
+                Container(
+                  alignment: Alignment.center,
+                  height: 100,
+                  width: 100,
+                  child: Text('4820'),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  height: 100,
+                  width: 100,
+                  color: Colors.green,
+                  child: ListView(
+                    padding: const EdgeInsets.all(8),
+                    children: <Widget>[
+                      Container(
+                        height: 50,
+                        child: const Center(child: Text('+80')),
+                      ),
+                      Container(
+                        height: 50,
+                        child: const Center(child: Text('+2.00%')),
+                      )
+                    ],
+                  ),
+                ),
+                //pembagi
+                Container(
+                    alignment: Alignment.center,
+                    height: 100,
+                    width: 100,
+                    child: ListView(
+                      padding: const EdgeInsets.all(8),
+                      children: <Widget>[
+                        Container(
+                          height: 50,
+                          child: const Center(child: Text('TLKM')),
+                        ),
+                        Container(
+                          height: 50,
+                          child: const Center(child: Text('Volume')),
+                        ),
+                        Container(
+                          height: 50,
+                          child: const Center(child: Text('Turn Over')),
+                        ),
+                      ],
+                    )),
+                Container(
+                  alignment: Alignment.center,
+                  child: ListView(padding: EdgeInsets.all(20), children: [
+                    Container(
+                        alignment: Alignment.center,
+                        child: Text('Telkom Indonesia',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20))),
+                    Container(alignment: Alignment.center, child: Text('77M')),
+                    Container(alignment: Alignment.center, child: Text('310')),
+                  ]),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    '4810',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  height: 100,
+                  width: 100,
+                  color: Colors.green,
+                  child: ListView(
+                    padding: const EdgeInsets.all(8),
+                    children: <Widget>[
+                      Container(
+                        height: 50,
+                        child: const Center(child: Text('+100')),
+                      ),
+                      Container(
+                        height: 50,
+                        child: const Center(child: Text('+5.00%')),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ))
           ],
-        )),
+        ),
       ),
+    );
+  }
+}
+
+class ButtonNamaKelompok extends StatelessWidget {
+  const ButtonNamaKelompok({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.account_circle_rounded),
+      onPressed: () {
+        // icon account di tap
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: const Text('Kelompok 14'),
+            content: const Text(
+                'Muhammad Hilmy Rasyad Sofyan (hilmyrs123@upi.edu) ; Sabila Rosad (sabila.rosad@upi.edu))'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'OK'),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ButtonPerjanjian extends StatelessWidget {
+  const ButtonPerjanjian({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.access_alarm_rounded),
+      onPressed: () {
+        // icon setting ditap
+        const snackBar = SnackBar(
+          duration: Duration(seconds: 20),
+          content: Text(
+              'Kami berjanji  tidak akan berbuat curang dan atau membantu kelompok lain berbuat curang'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
     );
   }
 }
